@@ -1,0 +1,79 @@
+I want you to give me proper steps  for the following 
+"provide Detailed Tasks"
+
+you are senior level coding expert in data integration ,
+I want you to add the code for the following to the existing code.
+
+Create new Java classes ByteSize.java and TimeDuration.java extending Token 
+[wrangler-api/src/main/java/io/cdap/wrangler/api/parser/Token.java] 
+1. These classes should parse the token string (e.g., "10KB", "150ms") in 
+their constructor. 
+2. Provide methods to retrieve the value in a canonical unit (e.g., long 
+getBytes() for ByteSize) 
+3. Add BYTE_SIZE and TIME_DURATION to the Token Types 
+ Update usage definition and token definition to support specifying these new 
+token types as valid directive arguments.
+
+<<code>>
+
+I want you to  the code for the following to the existing code.
+
+1.Create new Java classes ByteSize.java and TimeDuration.java extending Token 
+[wrangler-api/src/main/java/io/cdap/wrangler/api/parser/Token.java] 
+These classes should parse the token string (e.g., "10KB", "150ms") in 
+their constructor. 
+2. Provide methods to retrieve the value in a canonical unit (e.g., long 
+getBytes() for ByteSize) 
+3. Add BYTE_SIZE and TIME_DURATION to the Token Types 
+4. Update usage definition and token definition to support specifying these new 
+token types as valid directive arguments.
+
+I want you to  the code for the following to the existing code.
+
+Core Parser Updates (wrangler-core module): 
+1. Modify by adding visit methods for the parser rules created/modified in step 
+3a (e.g., visitByteSizeArg, visitTimeDurationArg, or modifying visitValue if 
+applicable). 
+ Hint : chk ctx.getText()). 
+ <<code>>
+ 
+ I want you to write  code for the following .
+ New Directive Implementation (wrangler-core module): 
+1. Create a new directive class, which can do aggregation, implementing the 
+Directive interface  
+2. UsageDefinition (define()): The directive should accept at least four 
+arguments: 
+a.. ColumnName (source column with byte sizes). 
+b.. ColumnName (source column with time durations). 
+c.. ColumnName (target column name for total size). 
+d.. ColumnName (target column name for total or average time). 
+Optionally, add arguments to specify output units (e.g., 'MB', 'GB', 
+'seconds', 'minutes') or aggregation type (total, average). 
+3 Initialization : Store the source and target column names provided in the 
+arguments. 
+4 Execution : 
+a.This directive should operate as an aggregate. So you need a store to 
+accumulate totals. Think about it. Hint : Chk ExecutorContext 
+b. For each row: 
+c. Read the byte size value from the source size column. 
+d. Read the time duration value from the source time column. 
+e. Add these values (converted to canonical units like bytes and 
+nanoseconds) to running totals stored in the Store. 
+f. Finalization : This method (if using RecipePipeline's aggregation 
+capabilities) or logic within the last execute call needs to: 
+g. Retrieve the final totals from the Store. 
+h. Perform unit conversions if required by arguments (e.g., convert total 
+bytes to MB, total nanoseconds to seconds). 
+i. Return a single new Row containing the target columns with the 
+calculated aggregate values (e.g., total_size_mb, total_time_sec).
+
+I want you to write  code for the following .
+ Testing (wrangler-core module): 
+1. Add unit tests for the ByteSize and TimeDuration classes, verifying correct 
+parsing and canonical value retrieval for various inputs (e.g., "10kb", "1.5MB", 
+"5ms", "2.1s"). 
+2. Add parser tests (e.g., in GrammarBasedParserTest.java or 
+RecipeCompilerTest.java to ensure recipes using the new syntax are parsed 
+correctly and invalid syntax is rejected. 
+3. Add comprehensive unit tests for the new AggregateStats directive. See the 
+Test Case Specification below. 

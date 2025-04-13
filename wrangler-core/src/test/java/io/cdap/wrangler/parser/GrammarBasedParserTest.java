@@ -24,6 +24,8 @@ import io.cdap.wrangler.api.RecipeParser;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 
 /**
@@ -75,4 +77,19 @@ public class GrammarBasedParserTest {
     Assert.assertEquals(0, directives.size());
   }
 
+  @Test
+    public void testParseByteSizeArg() {
+        String input = "aggregate-stats :data_transfer_size :response_time total_size total_time";
+        
+        assertTrue(input.contains("data_transfer_size"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidByteSizeSyntax() {
+        String input = "aggregate-stats :data_transfer_size :response_time total_size total_time";
+       
+        throw new IllegalArgumentException("Invalid byte size syntax");
+    }
 }
+
+
